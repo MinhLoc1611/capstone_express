@@ -28,22 +28,21 @@ model hinh_anh {
   nguoi_dung_id Int?
   binh_luan     binh_luan[]
   nguoi_dung    nguoi_dung? @relation(fields: [nguoi_dung_id], references: [nguoi_dung_id], onDelete: NoAction, onUpdate: NoAction, map: "hinh_anh_ibfk_1")
-  luu_anh       luu_anh[]   @ignore
+  luu_anh       luu_anh[]
 
   @@index([nguoi_dung_id], map: "nguoi_dung_id")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model luu_anh {
-  nguoi_dung_id  Int?
-  hinh_anh_id    Int?
-  ngay_binh_luan DateTime?   @db.Date
-  nguoi_dung     nguoi_dung? @relation(fields: [nguoi_dung_id], references: [nguoi_dung_id], onDelete: NoAction, onUpdate: NoAction, map: "luu_anh_ibfk_1")
-  hinh_anh       hinh_anh?   @relation(fields: [hinh_anh_id], references: [hinh_anh_id], onDelete: NoAction, onUpdate: NoAction, map: "luu_anh_ibfk_2")
+  nguoi_dung_id  Int
+  hinh_anh_id    Int
+  ngay_binh_luan DateTime?  @db.Date
+  nguoi_dung     nguoi_dung @relation(fields: [nguoi_dung_id], references: [nguoi_dung_id], onDelete: NoAction, onUpdate: NoAction, map: "luu_anh_ibfk_1")
+  hinh_anh       hinh_anh   @relation(fields: [hinh_anh_id], references: [hinh_anh_id], onDelete: NoAction, onUpdate: NoAction, map: "luu_anh_ibfk_2")
 
+  @@id([nguoi_dung_id, hinh_anh_id])
   @@index([hinh_anh_id], map: "hinh_anh_id")
   @@index([nguoi_dung_id], map: "nguoi_dung_id")
-  @@ignore
 }
 
 model nguoi_dung {
@@ -55,5 +54,5 @@ model nguoi_dung {
   anh_dai_dien  String?     @db.VarChar(100)
   binh_luan     binh_luan[]
   hinh_anh      hinh_anh[]
-  luu_anh       luu_anh[]   @ignore
+  luu_anh       luu_anh[]
 }
