@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaClient } from '@prisma/client';
 import { failCode, successCode } from 'src/config/response';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -19,9 +20,9 @@ export class AuthService {
       where: { email: email },
     });
     if (checkUser) {
-      if (checkUser.matkhau === matkhau) {
+      if (bcrypt.compareSync(matkhau, checkUser.matkhau)) {
         const loginUser = { ...checkUser, matkhau: '' };
-        const token = this.jwtService.signAsync(loginUser, {
+        const token = await this.jwtService.signAsync(loginUser, {
           secret: this.configService.get('KEY'),
           expiresIn: '1d',
         });
@@ -43,13 +44,15 @@ export class AuthService {
     },
     res: Response,
   ) {
+    const { matkhau } = userRegister;
     const checkEmail = await this.prisma.nguoi_dung.findFirst({
       where: { email: userRegister.email },
     });
     if (checkEmail) {
       return failCode(res, '', 'email đã tồn tại!');
     } else {
-      this.prisma.nguoi_dung.create({ data: userRegister });
+      userRegister.matkhau = bcrypt.hashSync(matkhau, 10);
+      await this.prisma.nguoi_dung.create({ data: userRegister });
       return successCode(res, '', 'Đăng ký thành công');
     }
   }
