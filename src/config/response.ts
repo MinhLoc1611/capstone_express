@@ -5,10 +5,9 @@ const successCode = (res: any, data: any, message: string) => {
   });
 };
 
-const failCode = (res: any, data: any, message: string) => {
+const failCode = (res: any, message: string) => {
   res.status(400).json({
     message,
-    content: data,
   });
 };
 

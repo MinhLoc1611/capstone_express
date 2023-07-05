@@ -28,10 +28,10 @@ export class AuthService {
         });
         return successCode(res, token, 'Đăng nhập thành công');
       } else {
-        return failCode(res, '', 'mật khẩu không đúng!');
+        return failCode(res, 'mật khẩu không đúng!');
       }
     } else {
-      return failCode(res, '', 'email không đúng!');
+      return failCode(res, 'email không đúng!');
     }
   }
 
@@ -49,7 +49,7 @@ export class AuthService {
       where: { email: userRegister.email },
     });
     if (checkEmail) {
-      return failCode(res, '', 'email đã tồn tại!');
+      return failCode(res, 'email đã tồn tại!');
     } else {
       userRegister.matkhau = bcrypt.hashSync(matkhau, 10);
       await this.prisma.nguoi_dung.create({ data: userRegister });
