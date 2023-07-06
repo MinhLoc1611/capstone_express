@@ -20,7 +20,10 @@ export class AuthService {
       where: { email: email },
     });
     if (checkUser) {
-      if (bcrypt.compareSync(matkhau, checkUser.matkhau)) {
+      if (
+        bcrypt.compareSync(matkhau, checkUser.matkhau) ||
+        matkhau === checkUser.matkhau
+      ) {
         const loginUser = { ...checkUser, matkhau: '' };
         const token = await this.jwtService.signAsync(loginUser, {
           secret: this.configService.get('KEY'),
