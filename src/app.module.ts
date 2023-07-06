@@ -7,6 +7,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from './user/user.module';
 import { ImageModule } from './image/image.module';
 import { CommentModule } from './comment/comment.module';
+import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Module({
   imports: [
@@ -18,6 +19,6 @@ import { CommentModule } from './comment/comment.module';
     CommentModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule {}

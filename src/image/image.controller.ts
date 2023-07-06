@@ -13,7 +13,7 @@ export class ImageController {
   }
 
   @Get(':ten')
-  getImgByName(@Param('ten') ten) {
+  getImgByName(@Param('ten') ten: string) {
     return this.imageService.getImgByName(ten);
   }
 }
