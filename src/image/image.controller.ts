@@ -27,6 +27,7 @@ export class ImageController {
   }
 
   // GET danh sách ảnh đã lưu theo user id.
+  
   // GET danh sách ảnh đã tạo theo user id.
   // DELETE xoá ảnh đã tạo theo id ảnh.
   // POST thêm một ảnh của user
