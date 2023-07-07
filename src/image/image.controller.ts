@@ -1,8 +1,8 @@
-import { Controller, Get, Param, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Res, UseGuards } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { AuthGuard } from '@nestjs/passport';
 
-@UseGuards(AuthGuard('jwt'))
+// @UseGuards(AuthGuard('jwt'))
 @Controller('image')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
@@ -16,4 +16,15 @@ export class ImageController {
   getImgByName(@Param('ten') ten: string) {
     return this.imageService.getImgByName(ten);
   }
+  // GET thông tin ảnh và người tạo ảnh bằng id ảnh.
+  @Get('/get-infor-img/:id') getImgInforById(@Param('id') imgId: string ,@Res() res) {
+    return this.imageService.getImgInforById(imgId,res);
+  }
+
+  // GET thông tin đã lưu hình này chưa theo id ảnh (dùng để kiểm tra ảnh này đã
+  // lưu chưa ở nút Save)
+  // GET danh sách ảnh đã lưu theo user id.
+  // GET danh sách ảnh đã tạo theo user id.
+  // DELETE xoá ảnh đã tạo theo id ảnh.
+  // POST thêm một ảnh của user
 }
