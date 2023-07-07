@@ -27,7 +27,11 @@ export class ImageController {
   }
 
   // GET danh sách ảnh đã lưu theo user id.
+  @Get('/get-saved-img/:userId') getSavedImgById(@Param('userId') userId: string ,@Res() res) {
+    return this.imageService.getSavedImgById(userId,res);
+  }
   
+
   // GET danh sách ảnh đã tạo theo user id.
   // DELETE xoá ảnh đã tạo theo id ảnh.
   // POST thêm một ảnh của user

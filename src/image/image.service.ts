@@ -71,4 +71,24 @@ export class ImageService {
       return errorCode(error, 'Loi Backend');
     }
   }
+  // GET danh sách ảnh đã lưu theo user id.
+  async getSavedImgById(userId: string, res: any) {
+    try {
+      const data = await this.prisma.luu_anh.findMany({
+        where: {
+          nguoi_dung_id: +userId,
+        },
+        include: {
+          hinh_anh: true,
+        },
+      });
+      if (data) {
+        return successCode(res, data, 'Lay data thanh cong');
+      } else {
+        return failCode(res, 'Khong co tai nguyen, img not exist');
+      }
+    } catch (error) {
+      return errorCode(error, 'Loi Backend');
+    }
+  }
 }
