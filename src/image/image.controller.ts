@@ -64,9 +64,10 @@ export class ImageController {
   // DELETE xoá ảnh đã tạo theo id ảnh.
   @Delete('/delete-img/:imgId') deleteImg(
     @Param('imgId') imgId: string,
+    @Param('userId') userId: string,
     @Res() res: Response,
   ) {
-    return this.imageService.deleteImg(imgId, res);
+    return this.imageService.deleteImg(imgId, userId,res);
   }
 
   // POST thêm một ảnh của user

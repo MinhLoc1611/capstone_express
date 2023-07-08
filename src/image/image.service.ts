@@ -109,18 +109,27 @@ export class ImageService {
       return errorCode(error, 'Loi Backend');
     }
   }
-  async deleteImg(imgId: string, res: Response) {
+  // DELETE xoá ảnh đã tạo theo id ảnh.
+  async deleteImg(imgId: string, userId: string, res: Response) {
     try {
-      await this.prisma.hinh_anh.delete({
-        where: {
-          hinh_anh_id: +imgId,
-        },
+      let checkUserId = this.prisma.nguoi_dung.findFirst({
+        where: { nguoi_dung_id: +userId },
       });
-      return successCode(res, imgId, 'Xoa thanh cong');
+      if (checkUserId) {
+        await this.prisma.hinh_anh.delete({
+          where: {
+            hinh_anh_id: +imgId,
+          },
+        });
+        return successCode(res, imgId, 'Xoa thanh cong');
+      } else {
+        return failCode(res, 'Khong duoc quyen xoa hinh nguoi khac');
+      }
     } catch (error) {
       return errorCode(error, 'Loi Backend');
     }
   }
+  // POST thêm một ảnh của user
   async uploadImg(
     userId: string,
     file: Express.Multer.File,
@@ -140,7 +149,7 @@ export class ImageService {
         await this.prisma.hinh_anh.create({ data: imgInfor });
         return successCode(res, imgInfor, 'Them hinh thanh cong');
       } else {
-        return failCode(res,"Nguoi dung k ton tai")
+        return failCode(res, 'Nguoi dung k ton tai');
       }
     } catch (error) {
       return errorCode(error, 'Loi Backend');
