@@ -83,7 +83,7 @@ export class ImageService {
           hinh_anh: true,
         },
       });
-      if (data) {
+      if (data.length > 0) {
         return successCode(res, data, 'Lay data thanh cong');
       } else {
         return failCode(res, 'Khong co tai nguyen, img not exist');
@@ -100,7 +100,7 @@ export class ImageService {
           nguoi_dung_id: +userId,
         },
       });
-      if (data) {
+      if (data.length > 0) {
         return successCode(res, data, 'Lay data thanh cong');
       } else {
         return failCode(res, 'Khong co tai nguyen, img not exist');
