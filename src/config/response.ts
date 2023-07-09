@@ -11,9 +11,4 @@ const failCode = (res: any, message: string) => {
   });
 };
 
-const errorCode = (res: any, message: string) => {
-  res.status(500).json({
-    message,
-  });
-};
-export { successCode, failCode, errorCode };
+export { successCode, failCode };
