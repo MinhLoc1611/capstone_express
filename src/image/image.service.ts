@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient, hinh_anh } from '@prisma/client';
-import { GetResult } from '@prisma/client/runtime';
 import { errorCode, failCode, successCode } from 'src/config/response';
 
 @Injectable()
@@ -59,7 +58,7 @@ export class ImageService {
         },
       });
       if (data) {
-        let cloneData = { ...data, isSaved: false };
+        const cloneData = { ...data, isSaved: false };
         if (data.luu_anh.length >= 1) {
           cloneData.isSaved = true;
           return successCode(res, cloneData, 'Lay data thanh cong');
@@ -112,7 +111,7 @@ export class ImageService {
   // DELETE xoá ảnh đã tạo theo id ảnh.
   async deleteImg(imgId: string, userId: string, res: Response) {
     try {
-      let checkUserId = this.prisma.nguoi_dung.findFirst({
+      const checkUserId = this.prisma.nguoi_dung.findFirst({
         where: { nguoi_dung_id: +userId },
       });
       if (checkUserId) {
@@ -137,7 +136,7 @@ export class ImageService {
     res: Response,
   ) {
     try {
-      let checkUser = await this.prisma.nguoi_dung.findFirst({
+      const checkUser = await this.prisma.nguoi_dung.findFirst({
         where: {
           nguoi_dung_id: +userId,
         },
