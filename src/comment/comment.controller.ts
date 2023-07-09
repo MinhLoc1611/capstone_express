@@ -9,20 +9,23 @@ import {
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { AuthGuard } from '@nestjs/passport';
-import { binh_luan } from '@prisma/client';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { postCommentType } from './entities/comment.entity';
 
+@ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
+@ApiTags('Comment')
 @Controller('comment')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
   @Get('/:hinhAnhId')
-  getComment(@Param('hinhAnhId') hinhAnhId: string): Promise<binh_luan[]> {
-    return this.commentService.getComment(+hinhAnhId);
+  getComment(@Param('hinhAnhId') hinhAnhId: string, @Res() res: Response) {
+    return this.commentService.getComment(+hinhAnhId, res);
   }
 
   @Post()
-  postComment(@Body() body, @Res() res) {
+  postComment(@Body() body: postCommentType, @Res() res: Response) {
     return this.commentService.postComment(body, res);
   }
 }

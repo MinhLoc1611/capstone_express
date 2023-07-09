@@ -4,6 +4,7 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaClient } from '@prisma/client';
 import { failCode, successCode } from 'src/config/response';
 import * as bcrypt from 'bcrypt';
+import { userLoginType, userRegisterType } from './entities/auth.entity';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,7 @@ export class AuthService {
 
   prisma = new PrismaClient();
 
-  async login(userLogin: { email: string; matkhau: string }, res: Response) {
+  async login(userLogin: userLoginType, res: Response) {
     const { email, matkhau } = userLogin;
     const checkUser = await this.prisma.nguoi_dung.findFirst({
       where: { email: email },
@@ -38,15 +39,7 @@ export class AuthService {
     }
   }
 
-  async register(
-    userRegister: {
-      email: string;
-      matkhau: string;
-      ho_ten: string;
-      tuoi: number;
-    },
-    res: Response,
-  ) {
+  async register(userRegister: userRegisterType, res: Response) {
     const { matkhau } = userRegister;
     const checkEmail = await this.prisma.nguoi_dung.findFirst({
       where: { email: userRegister.email },
