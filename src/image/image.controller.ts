@@ -12,18 +12,13 @@ import {
 } from '@nestjs/common';
 import { ImageService } from './image.service';
 import { AuthGuard } from '@nestjs/passport';
-<<<<<<< HEAD
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
 @ApiTags('Image')
-=======
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-
-// @UseGuards(AuthGuard('jwt'))
->>>>>>> origin/phong-img
 @Controller('image')
 export class ImageController {
   constructor(private readonly imageService: ImageService) {}
@@ -75,7 +70,7 @@ export class ImageController {
     @Param('userId') userId: string,
     @Res() res: Response,
   ) {
-    return this.imageService.deleteImg(imgId, userId,res);
+    return this.imageService.deleteImg(imgId, userId, res);
   }
 
   // POST thêm một ảnh của user
