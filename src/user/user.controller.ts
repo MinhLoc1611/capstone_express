@@ -15,7 +15,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { FileUploadDto, userUpdateType } from './entities/user.entity';
+import { FileUploadDto, userUpdateType } from './dto/user.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))

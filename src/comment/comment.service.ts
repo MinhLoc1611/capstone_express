@@ -1,7 +1,7 @@
 import { successCode } from 'src/config/response';
 import { HttpException, Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { postCommentType } from './entities/comment.entity';
+import { postCommentType } from './dto/comment.dto';
 
 @Injectable()
 export class CommentService {
