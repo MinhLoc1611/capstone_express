@@ -1,16 +1,38 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaClient, hinh_anh } from '@prisma/client';
-import { errorCode, failCode, successCode } from 'src/config/response';
+import {
+  HttpCode,
+  Injectable,
+  HttpException,
+  NotFoundException,
+  BadRequestException,
+  InternalServerErrorException,
+  ForbiddenException,
+} from '@nestjs/common';
+import { PrismaClient } from '@prisma/client';
+
+import { ImgUploadDto } from './dto/img.dto';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Injectable()
 export class ImageService {
   prisma = new PrismaClient();
 
   async getImg() {
-    const data = await this.prisma.hinh_anh.findMany();
-    return data;
+    try {
+      const data = await this.prisma.hinh_anh.findMany();
+      return data;
+    } catch (error) {
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException
+      ) {
+        throw error; // Rethrow the exception to be handled by NestJS
+      } else {
+        throw new InternalServerErrorException('Internal Server Error');
+      }
+    }
   }
-
+  // GET thông tin ảnh bằng tên.
   async getImgByName(ten: string) {
     const data = await this.prisma.hinh_anh.findMany({
       where: {
@@ -22,8 +44,14 @@ export class ImageService {
     return data;
   }
   // GET thông tin ảnh và người tạo ảnh bằng id ảnh.
-  async getImgInforById(imgId: string, res: Response) {
+  async getImgInforById(imgId: string) {
     try {
+      if (isNaN(+imgId)) {
+        throw new BadRequestException(
+          'Invalid image ID. Please provide a valid numeric ID.',
+        );
+      }
+
       const data = await this.prisma.hinh_anh.findFirst({
         where: {
           hinh_anh_id: +imgId,
@@ -32,47 +60,72 @@ export class ImageService {
           nguoi_dung: true,
         },
       });
+
       if (data) {
-        return successCode(res, data, 'Lay data thanh cong');
+        const { nguoi_dung, ...modifiedData } = data;
+        const { email, ho_ten, tuoi, anh_dai_dien } = nguoi_dung;
+        return { ...modifiedData, email, ho_ten, tuoi, anh_dai_dien };
       } else {
-        return failCode(res, 'Khong co tai nguyen, img not exist');
+        throw new NotFoundException('Khong co tai nguyen', {
+          cause: new Error(),
+          description: 'Tai nguyen khong ton tai, vui long nhap ID khac',
+        });
       }
     } catch (error) {
-      return errorCode(error, 'Loi Backend');
+      // Propagate the error and return appropriate HTTP response
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException
+      ) {
+        throw error; // Rethrow the exception to be handled by NestJS
+      } else {
+        throw new InternalServerErrorException('Internal Server Error');
+      }
     }
   }
   // GET thông tin đã lưu hình này chưa theo id ảnh (dùng để kiểm tra ảnh này đã
-  async getImgSaveInforById(imgId: string, userId: string, res: Response) {
+
+  async getImgSaveInforById(imgId: string, userId: string) {
     try {
       const data = await this.prisma.hinh_anh.findFirst({
         where: {
           hinh_anh_id: +imgId,
         },
-        include: {
-          nguoi_dung: true,
-          luu_anh: {
-            where: {
-              nguoi_dung_id: +userId,
-            },
-          },
-        },
       });
       if (data) {
-        const cloneData = { ...data, isSaved: false };
-        if (data.luu_anh.length >= 1) {
+        let cloneData = { ...data, isSaved: false };
+        let checkSaved = await this.prisma.luu_anh.findFirst({
+          where: {
+            nguoi_dung_id: +userId,
+            hinh_anh_id: +imgId,
+          },
+        });
+        if (checkSaved) {
           cloneData.isSaved = true;
-          return successCode(res, cloneData, 'Lay data thanh cong');
+
+          return cloneData;
         }
-        return successCode(res, cloneData, 'Lay data thanh cong');
+        return cloneData;
       } else {
-        return failCode(res, 'Khong co tai nguyen, img not exist');
+        throw new NotFoundException('Khong co tai nguyen', {
+          cause: new Error(),
+          description: 'Tai nguyen khong ton tai, vui long nhap ID khac',
+        });
       }
     } catch (error) {
-      return errorCode(error, 'Loi Backend');
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException
+      ) {
+        throw error; // Rethrow the exception to be handled by NestJS
+      } else {
+        throw new InternalServerErrorException('Internal Server Error');
+      }
     }
   }
   // GET danh sách ảnh đã lưu theo user id.
-  async getSavedImgById(userId: string, res: Response) {
+  async getSavedImgById(userId: string) {
     try {
       const data = await this.prisma.luu_anh.findMany({
         where: {
@@ -83,16 +136,31 @@ export class ImageService {
         },
       });
       if (data.length > 0) {
-        return successCode(res, data, 'Lay data thanh cong');
+        const modifiedData = data.map((element) => {
+          return { ...element.hinh_anh, ngay_luu: element.ngay_luu };
+        });
+
+        return modifiedData;
       } else {
-        return failCode(res, 'Khong co tai nguyen, img not exist');
+        throw new NotFoundException('Khong co tai nguyen', {
+          cause: new Error(),
+          description: 'Tai nguyen khong ton tai, vui long nhap ID khac',
+        });
       }
     } catch (error) {
-      return errorCode(error, 'Loi Backend');
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException
+      ) {
+        throw error; // Rethrow the exception to be handled by NestJS
+      } else {
+        throw new InternalServerErrorException('Internal Server Error');
+      }
     }
   }
   //  GET danh sách ảnh đã tạo theo user id.
-  async getCreatedImgById(userId: string, res: Response) {
+  async getCreatedImgById(userId: string) {
     try {
       const data = await this.prisma.hinh_anh.findMany({
         where: {
@@ -100,40 +168,86 @@ export class ImageService {
         },
       });
       if (data.length > 0) {
-        return successCode(res, data, 'Lay data thanh cong');
+        return data;
       } else {
-        return failCode(res, 'Khong co tai nguyen, img not exist');
+        throw new NotFoundException('Khong co tai nguyen', {
+          cause: new Error(),
+          description: 'Tai nguyen khong ton tai, vui long nhap ID khac',
+        });
       }
     } catch (error) {
-      return errorCode(error, 'Loi Backend');
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException
+      ) {
+        throw error; // Rethrow the exception to be handled by NestJS
+      } else {
+        throw new InternalServerErrorException('Internal Server Error');
+      }
     }
   }
   // DELETE xoá ảnh đã tạo theo id ảnh.
-  async deleteImg(imgId: string, userId: string, res: Response) {
+  async deleteImg(imgId: string, userId: string) {
     try {
-      const checkUserId = this.prisma.nguoi_dung.findFirst({
-        where: { nguoi_dung_id: +userId },
-      });
-      if (checkUserId) {
-        await this.prisma.hinh_anh.delete({
-          where: {
-            hinh_anh_id: +imgId,
-          },
+      const checkImg = await this.prisma.hinh_anh.findFirst({
+        where:{
+          hinh_anh_id:+imgId
+        }
+      })
+      if (checkImg) {
+        const checkUserId = await this.prisma.nguoi_dung.findFirst({
+          where: { nguoi_dung_id: +userId },
         });
-        return successCode(res, imgId, 'Xoa thanh cong');
+        if (checkUserId) {
+          const checkImgOwner = await this.prisma.hinh_anh.findFirst({
+            where: { nguoi_dung_id: +userId, hinh_anh_id: +imgId },
+          });
+          if (checkImgOwner) {
+            await this.prisma.hinh_anh.delete({
+              where: {
+                hinh_anh_id: +imgId,
+              },
+            });
+  
+            return { imgId, message: 'Xoa hinh thanh cong' };
+          } else {
+            throw new ForbiddenException('Not ownership', {
+              cause: new Error(),
+              description: 'You cannot delete other account img'
+            });
+          }
+        } else {
+          throw new NotFoundException('Khong co tai nguyen', {
+            cause: new Error(),
+            description: 'Tai nguyen khong ton tai, vui long dang nhap ID khac',
+          });
+        }
       } else {
-        return failCode(res, 'Khong duoc quyen xoa hinh nguoi khac');
+        throw new NotFoundException('Khong co tai nguyen', {
+          cause: new Error(),
+          description: 'Tai nguyen khong ton tai, hinh anh khong ton tai',
+        });
       }
+   
     } catch (error) {
-      return errorCode(error, 'Loi Backend');
+      console.log(error);
+
+      if (
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException
+      ) {
+        throw error; // Rethrow the exception to be handled by NestJS
+      } else {
+        throw new InternalServerErrorException('Internal Server Error');
+      }
     }
   }
   // POST thêm một ảnh của user
   async uploadImg(
     userId: string,
     file: Express.Multer.File,
-    imgInfor: hinh_anh,
-    res: Response,
+    imgInfor: ImgUploadDto,
   ) {
     try {
       const checkUser = await this.prisma.nguoi_dung.findFirst({
@@ -146,12 +260,23 @@ export class ImageService {
         imgInfor.nguoi_dung_id = +userId;
 
         await this.prisma.hinh_anh.create({ data: imgInfor });
-        return successCode(res, imgInfor, 'Them hinh thanh cong');
+        return imgInfor;
       } else {
-        return failCode(res, 'Nguoi dung k ton tai');
+        throw new NotFoundException('User khong ton tai', {
+          cause: new Error(),
+          description: 'Vui long nhap user ID khac',
+        });
       }
     } catch (error) {
-      return errorCode(error, 'Loi Backend');
+      if (
+        error instanceof BadRequestException ||
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException
+      ) {
+        throw error; // Rethrow the exception to be handled by NestJS
+      } else {
+        throw new InternalServerErrorException('Internal Server Error');
+      }
     }
   }
 }

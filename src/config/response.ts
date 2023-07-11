@@ -11,8 +11,9 @@ const failCode = (res: any, message: string) => {
   });
 };
 
-const errorCode = (res: any, message: string) => {
+const errorCode = (res: any, error: any, message: string) => {
   res.status(500).json({
+    error,
     message,
   });
 };
