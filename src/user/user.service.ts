@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaClient } from '@prisma/client';
 import { successCode } from 'src/config/response';
-import { userUpdateType } from './entities/user.entity';
+import { userUpdateType } from './dto/user.dto';
 
 @Injectable()
 export class UserService {

@@ -10,7 +10,7 @@ import {
 import { CommentService } from './comment.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { postCommentType } from './entities/comment.entity';
+import { postCommentType } from './dto/comment.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
