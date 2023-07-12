@@ -7,9 +7,12 @@ export class ImgUploadDto {
   ten_hinh: string;
   @ApiProperty()
   mo_ta: string;
-  duong_dan: string;
-  nguoi_dung_id: number;
 }
+export class ImgUploadBodyDto{
+  ten_hinh: string;
+  mo_ta: string;
+}
+
 export class ImgDto {
   hinh_anh_id: number;
   ten_hinh: string;

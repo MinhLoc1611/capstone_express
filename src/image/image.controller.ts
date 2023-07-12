@@ -6,6 +6,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -21,7 +22,8 @@ import {
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { ImgDeleteDto, ImgDto, ImgUploadDto } from './dto/img.dto';
+import { type } from 'os';
+import { ImgDeleteDto, ImgDto, ImgUploadBodyDto, ImgUploadDto } from './dto/img.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
@@ -96,7 +98,7 @@ export class ImageController {
   uploadImg(
     @Param('userId') userId: string,
     @UploadedFile() file: Express.Multer.File,
-    @Body() imgInfor: ImgUploadDto,
+    @Body() imgInfor: ImgUploadBodyDto,
   ) {
     return this.imageService.uploadImg(userId, file, imgInfor);
   }

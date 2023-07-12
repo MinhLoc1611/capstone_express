@@ -1,12 +1,15 @@
 import {
+  HttpCode,
   Injectable,
+  HttpException,
   NotFoundException,
   BadRequestException,
   InternalServerErrorException,
   ForbiddenException,
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { ImgUploadDto } from './dto/img.dto';
+
+import { ImgUploadBodyDto, ImgUploadDto } from './dto/img.dto';
 
 @Injectable()
 export class ImageService {
@@ -89,8 +92,8 @@ export class ImageService {
         },
       });
       if (data) {
-        const cloneData = { ...data, isSaved: false };
-        const checkSaved = await this.prisma.luu_anh.findFirst({
+        let cloneData = { ...data, isSaved: false };
+        let checkSaved = await this.prisma.luu_anh.findFirst({
           where: {
             nguoi_dung_id: +userId,
             hinh_anh_id: +imgId,
@@ -242,7 +245,7 @@ export class ImageService {
   async uploadImg(
     userId: string,
     file: Express.Multer.File,
-    imgInfor: ImgUploadDto,
+    imgInfor: ImgUploadBodyDto,
   ) {
     try {
       const checkUser = await this.prisma.nguoi_dung.findFirst({
@@ -251,11 +254,15 @@ export class ImageService {
         },
       });
       if (checkUser) {
-        imgInfor.duong_dan = file.filename;
-        imgInfor.nguoi_dung_id = +userId;
+        let newImg = {
+          duong_dan: file.filename,
+          nguoi_dung_id: +userId,
+          ten_hinh: imgInfor.ten_hinh,
+          mo_ta: imgInfor.mo_ta,
+        };
 
-        await this.prisma.hinh_anh.create({ data: imgInfor });
-        return imgInfor;
+        await this.prisma.hinh_anh.create({ data: newImg });
+        return newImg;
       } else {
         throw new NotFoundException('User khong ton tai', {
           cause: new Error(),
