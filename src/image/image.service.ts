@@ -1,16 +1,12 @@
 import {
-  HttpCode,
   Injectable,
-  HttpException,
   NotFoundException,
   BadRequestException,
   InternalServerErrorException,
   ForbiddenException,
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-
 import { ImgUploadDto } from './dto/img.dto';
-import { ApiResponse } from '@nestjs/swagger';
 
 @Injectable()
 export class ImageService {
@@ -93,8 +89,8 @@ export class ImageService {
         },
       });
       if (data) {
-        let cloneData = { ...data, isSaved: false };
-        let checkSaved = await this.prisma.luu_anh.findFirst({
+        const cloneData = { ...data, isSaved: false };
+        const checkSaved = await this.prisma.luu_anh.findFirst({
           where: {
             nguoi_dung_id: +userId,
             hinh_anh_id: +imgId,
@@ -191,10 +187,10 @@ export class ImageService {
   async deleteImg(imgId: string, userId: string) {
     try {
       const checkImg = await this.prisma.hinh_anh.findFirst({
-        where:{
-          hinh_anh_id:+imgId
-        }
-      })
+        where: {
+          hinh_anh_id: +imgId,
+        },
+      });
       if (checkImg) {
         const checkUserId = await this.prisma.nguoi_dung.findFirst({
           where: { nguoi_dung_id: +userId },
@@ -209,12 +205,12 @@ export class ImageService {
                 hinh_anh_id: +imgId,
               },
             });
-  
+
             return { imgId, message: 'Xoa hinh thanh cong' };
           } else {
             throw new ForbiddenException('Not ownership', {
               cause: new Error(),
-              description: 'You cannot delete other account img'
+              description: 'You cannot delete other account img',
             });
           }
         } else {
@@ -229,7 +225,6 @@ export class ImageService {
           description: 'Tai nguyen khong ton tai, hinh anh khong ton tai',
         });
       }
-   
     } catch (error) {
       console.log(error);
 

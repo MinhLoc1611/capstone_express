@@ -10,8 +10,12 @@ export class UserService {
   prisma = new PrismaClient();
 
   getUserByToken(token: string, res: Response) {
-    const user = this.jwtService.decode(token.slice(7, token.length));
-    return successCode(res, user, 'Lấy thông tin thành công');
+    try {
+      const user = this.jwtService.decode(token.slice(7, token.length));
+      return successCode(res, user, 'Lấy thông tin thành công');
+    } catch (err) {
+      throw new HttpException(err.response, err.status);
+    }
   }
 
   async updateUser(

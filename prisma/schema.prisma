@@ -13,7 +13,7 @@ model binh_luan {
   hinh_anh_id    Int?
   ngay_binh_luan DateTime?   @db.Date
   noi_dung       String?     @db.VarChar(200)
-  nguoi_dung     nguoi_dung? @relation(fields: [nguoi_dung_id], references: [nguoi_dung_id], onDelete: NoAction, onUpdate: NoAction, map: "binh_luan_ibfk_1")
+  nguoi_dung     nguoi_dung? @relation(fields: [nguoi_dung_id], references: [nguoi_dung_id], onDelete: Cascade, onUpdate: NoAction, map: "binh_luan_ibfk_1")
   hinh_anh       hinh_anh?   @relation(fields: [hinh_anh_id], references: [hinh_anh_id], onDelete: Cascade, onUpdate: NoAction, map: "binh_luan_ibfk_2")
 
   @@index([hinh_anh_id], map: "hinh_anh_id")

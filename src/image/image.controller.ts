@@ -6,7 +6,6 @@ import {
   HttpCode,
   Param,
   Post,
-  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -22,7 +21,6 @@ import {
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { type } from 'os';
 import { ImgDeleteDto, ImgDto, ImgUploadDto } from './dto/img.dto';
 
 @ApiBearerAuth()
@@ -63,7 +61,7 @@ export class ImageController {
   // GET danh sách ảnh đã lưu theo user id.
   @Get('/get-saved-img/:userId') getSavedImgById(
     @Param('userId') userId: string,
-  ):Promise<ImgDto[]> {
+  ): Promise<ImgDto[]> {
     return this.imageService.getSavedImgById(userId);
   }
 
@@ -71,14 +69,14 @@ export class ImageController {
 
   @Get('/get-created-img/:userId') getCreatedImgById(
     @Param('userId') userId: string,
-  ):Promise<ImgDto[]> {
+  ): Promise<ImgDto[]> {
     return this.imageService.getCreatedImgById(userId);
   }
   // DELETE xoá ảnh đã tạo theo id ảnh.
   @Delete('/delete-img/:imgId/:userId') deleteImg(
     @Param('imgId') imgId: string,
     @Param('userId') userId: string,
-  ):Promise<ImgDeleteDto> {
+  ): Promise<ImgDeleteDto> {
     return this.imageService.deleteImg(imgId, userId);
   }
 
