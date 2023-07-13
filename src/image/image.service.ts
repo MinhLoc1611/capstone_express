@@ -1,7 +1,5 @@
 import {
-  HttpCode,
   Injectable,
-  HttpException,
   NotFoundException,
   BadRequestException,
   InternalServerErrorException,
@@ -9,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
-import { ImgUploadBodyDto, ImgUploadDto } from './dto/img.dto';
+import { ImgUploadBodyDto } from './dto/img.dto';
 
 @Injectable()
 export class ImageService {
