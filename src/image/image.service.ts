@@ -1,7 +1,5 @@
 import {
-  HttpCode,
   Injectable,
-  HttpException,
   NotFoundException,
   BadRequestException,
   InternalServerErrorException,
@@ -9,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
-import { ImgUploadBodyDto, ImgUploadDto } from './dto/img.dto';
+import { ImgUploadBodyDto } from './dto/img.dto';
 
 @Injectable()
 export class ImageService {
@@ -92,8 +90,8 @@ export class ImageService {
         },
       });
       if (data) {
-        let cloneData = { ...data, isSaved: false };
-        let checkSaved = await this.prisma.luu_anh.findFirst({
+        const cloneData = { ...data, isSaved: false };
+        const checkSaved = await this.prisma.luu_anh.findFirst({
           where: {
             nguoi_dung_id: +userId,
             hinh_anh_id: +imgId,
@@ -254,7 +252,7 @@ export class ImageService {
         },
       });
       if (checkUser) {
-        let newImg = {
+        const newImg = {
           duong_dan: file.filename,
           nguoi_dung_id: +userId,
           ten_hinh: imgInfor.ten_hinh,

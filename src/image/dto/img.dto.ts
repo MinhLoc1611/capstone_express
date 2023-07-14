@@ -8,7 +8,7 @@ export class ImgUploadDto {
   @ApiProperty()
   mo_ta: string;
 }
-export class ImgUploadBodyDto{
+export class ImgUploadBodyDto {
   ten_hinh: string;
   mo_ta: string;
 }

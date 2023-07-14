@@ -6,7 +6,6 @@ import {
   HttpCode,
   Param,
   Post,
-  Res,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -22,8 +21,12 @@ import {
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { type } from 'os';
-import { ImgDeleteDto, ImgDto, ImgUploadBodyDto, ImgUploadDto } from './dto/img.dto';
+import {
+  ImgDeleteDto,
+  ImgDto,
+  ImgUploadBodyDto,
+  ImgUploadDto,
+} from './dto/img.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
