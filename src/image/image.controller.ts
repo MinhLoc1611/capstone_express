@@ -21,7 +21,12 @@ import {
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { ImgDeleteDto, ImgDto, ImgUploadBodyDto, ImgUploadDto } from './dto/img.dto';
+import {
+  ImgDeleteDto,
+  ImgDto,
+  ImgUploadBodyDto,
+  ImgUploadDto,
+} from './dto/img.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
