@@ -7,6 +7,10 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+DROP DATABASE IF EXISTS db_pinest;
+CREATE DATABASE db_pinest;
+USE db_pinest;
+
 CREATE TABLE `binh_luan` (
   `binh_luan_id` int NOT NULL AUTO_INCREMENT,
   `nguoi_dung_id` int DEFAULT NULL,
