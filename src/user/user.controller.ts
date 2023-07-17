@@ -9,6 +9,7 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  Post,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -43,13 +44,21 @@ export class UserController {
       }),
     }),
   )
+  @Post('/upload-avatar/:userId')
+  uploadAvatar(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('userId') id: string,
+    @Res() res: Response,
+  ) {
+    return this.userService.uploadAvatar(file, +id, res);
+  }
+
   @Put('/:userId')
   updateUser(
-    @UploadedFile() file: Express.Multer.File,
     @Param('userId') id: string,
     @Body() body: userUpdateType,
     @Res() res: Response,
   ) {
-    return this.userService.updateUser(file, +id, body, res);
+    return this.userService.updateUser(+id, body, res);
   }
 }

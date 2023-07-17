@@ -18,12 +18,27 @@ export class UserService {
     }
   }
 
-  async updateUser(
-    file: Express.Multer.File,
-    id: number,
-    body: userUpdateType,
-    res: Response,
-  ) {
+  async uploadAvatar(file: Express.Multer.File, id: number, res: Response) {
+    try {
+      const getUserById = await this.prisma.nguoi_dung.findFirst({
+        where: { nguoi_dung_id: id },
+      });
+      if (getUserById) {
+        getUserById.anh_dai_dien = file.filename;
+
+        await this.prisma.nguoi_dung.update({
+          data: getUserById,
+          where: { nguoi_dung_id: id },
+        });
+        return successCode(res, '', 'Upload avatar thành công');
+      }
+      throw new HttpException('Không tìm thấy thông tin người dùng', 400);
+    } catch (err) {
+      throw new HttpException(err.response, err.status);
+    }
+  }
+
+  async updateUser(id: number, body: userUpdateType, res: Response) {
     try {
       const { email, ho_ten, tuoi } = body;
       const getUser = await this.prisma.nguoi_dung.findFirst({
@@ -34,8 +49,7 @@ export class UserService {
           ...getUser,
           email,
           ho_ten,
-          tuoi: +tuoi,
-          anh_dai_dien: file.filename,
+          tuoi,
         };
         await this.prisma.nguoi_dung.update({
           where: { nguoi_dung_id: id },
