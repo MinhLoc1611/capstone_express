@@ -30,7 +30,8 @@ export class AuthService {
           secret: this.configService.get('KEY'),
           expiresIn: '1d',
         });
-        return successCode(res, token, 'Đăng nhập thành công');
+        const data = { user: loginUser, token: token };
+        return successCode(res, data, 'Đăng nhập thành công');
       } else {
         return failCode(res, 'mật khẩu không đúng!');
       }
