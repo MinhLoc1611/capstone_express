@@ -27,6 +27,7 @@ import {
   ImgUploadBodyDto,
   ImgUploadDto,
 } from './dto/img.dto';
+import { luu_anh } from '@prisma/client';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
@@ -104,5 +105,12 @@ export class ImageController {
     @Body() imgInfor: ImgUploadBodyDto,
   ) {
     return this.imageService.uploadImg(userId, file, imgInfor);
+  }
+  // POST lưu ảnh theo user
+  @Post('save-img/:imgId/:userId') saveImg(
+    @Param('imgId') imgId: string,
+    @Param('userId') userId: string,
+  ): Promise<luu_anh> {
+    return this.imageService.saveImg(imgId, userId);
   }
 }

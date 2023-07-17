@@ -5,7 +5,7 @@ import {
   InternalServerErrorException,
   ForbiddenException,
 } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, luu_anh } from '@prisma/client';
 
 import { ImgUploadBodyDto } from './dto/img.dto';
 
@@ -227,8 +227,6 @@ export class ImageService {
         });
       }
     } catch (error) {
-      console.log(error);
-
       if (
         error instanceof NotFoundException ||
         error instanceof ForbiddenException
@@ -270,6 +268,28 @@ export class ImageService {
     } catch (error) {
       if (
         error instanceof BadRequestException ||
+        error instanceof NotFoundException ||
+        error instanceof ForbiddenException
+      ) {
+        throw error; // Rethrow the exception to be handled by NestJS
+      } else {
+        throw new InternalServerErrorException('Internal Server Error');
+      }
+    }
+  }
+  async saveImg(imgId: string, userId: string) {
+    try {
+      let data: luu_anh = {
+        nguoi_dung_id: +userId,
+        hinh_anh_id: +imgId,
+        ngay_luu: new Date(),
+      };
+      await this.prisma.luu_anh.create({
+        data: data,
+      });
+      return data
+    } catch (error) {
+      if (
         error instanceof NotFoundException ||
         error instanceof ForbiddenException
       ) {
