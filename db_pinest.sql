@@ -7,9 +7,11 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+
 DROP DATABASE IF EXISTS db_pinest;
 CREATE DATABASE db_pinest;
 USE db_pinest;
+
 
 CREATE TABLE `binh_luan` (
   `binh_luan_id` int NOT NULL AUTO_INCREMENT,
@@ -20,8 +22,8 @@ CREATE TABLE `binh_luan` (
   PRIMARY KEY (`binh_luan_id`),
   KEY `nguoi_dung_id` (`nguoi_dung_id`),
   KEY `hinh_anh_id` (`hinh_anh_id`),
-  CONSTRAINT `binh_luan_ibfk_1` FOREIGN KEY (`nguoi_dung_id`) REFERENCES `nguoi_dung` (`nguoi_dung_id`),
-  CONSTRAINT `binh_luan_ibfk_2` FOREIGN KEY (`hinh_anh_id`) REFERENCES `hinh_anh` (`hinh_anh_id`)
+  CONSTRAINT `binh_luan_ibfk_1` FOREIGN KEY (`nguoi_dung_id`) REFERENCES `nguoi_dung` (`nguoi_dung_id`) ON DELETE CASCADE,
+  CONSTRAINT `binh_luan_ibfk_2` FOREIGN KEY (`hinh_anh_id`) REFERENCES `hinh_anh` (`hinh_anh_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `hinh_anh` (
@@ -32,7 +34,7 @@ CREATE TABLE `hinh_anh` (
   `nguoi_dung_id` int DEFAULT NULL,
   PRIMARY KEY (`hinh_anh_id`),
   KEY `nguoi_dung_id` (`nguoi_dung_id`),
-  CONSTRAINT `hinh_anh_ibfk_1` FOREIGN KEY (`nguoi_dung_id`) REFERENCES `nguoi_dung` (`nguoi_dung_id`)
+  CONSTRAINT `hinh_anh_ibfk_1` FOREIGN KEY (`nguoi_dung_id`) REFERENCES `nguoi_dung` (`nguoi_dung_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `luu_anh` (
@@ -42,8 +44,8 @@ CREATE TABLE `luu_anh` (
   PRIMARY KEY (`nguoi_dung_id`,`hinh_anh_id`),
   KEY `hinh_anh_id` (`hinh_anh_id`),
   KEY `nguoi_dung_id` (`nguoi_dung_id`) USING BTREE,
-  CONSTRAINT `luu_anh_ibfk_1` FOREIGN KEY (`nguoi_dung_id`) REFERENCES `nguoi_dung` (`nguoi_dung_id`),
-  CONSTRAINT `luu_anh_ibfk_2` FOREIGN KEY (`hinh_anh_id`) REFERENCES `hinh_anh` (`hinh_anh_id`)
+  CONSTRAINT `luu_anh_ibfk_1` FOREIGN KEY (`nguoi_dung_id`) REFERENCES `nguoi_dung` (`nguoi_dung_id`) ON DELETE CASCADE,
+  CONSTRAINT `luu_anh_ibfk_2` FOREIGN KEY (`hinh_anh_id`) REFERENCES `hinh_anh` (`hinh_anh_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `nguoi_dung` (

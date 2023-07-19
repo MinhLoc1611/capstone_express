@@ -279,7 +279,7 @@ export class ImageService {
   }
   async saveImg(imgId: string, userId: string) {
     try {
-      let data: luu_anh = {
+      const data: luu_anh = {
         nguoi_dung_id: +userId,
         hinh_anh_id: +imgId,
         ngay_luu: new Date(),
@@ -287,7 +287,7 @@ export class ImageService {
       await this.prisma.luu_anh.create({
         data: data,
       });
-      return data
+      return data;
     } catch (error) {
       if (
         error instanceof NotFoundException ||
