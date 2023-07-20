@@ -132,18 +132,10 @@ export class ImageService {
           hinh_anh: true,
         },
       });
-      if (data.length > 0) {
-        const modifiedData = data.map((element) => {
-          return { ...element.hinh_anh, ngay_luu: element.ngay_luu };
-        });
-
-        return modifiedData;
-      } else {
-        throw new NotFoundException('Khong co tai nguyen', {
-          cause: new Error(),
-          description: 'Tai nguyen khong ton tai, vui long nhap ID khac',
-        });
-      }
+      const modifiedData = data.map((element) => {
+        return { ...element.hinh_anh, ngay_luu: element.ngay_luu };
+      });
+      return modifiedData;
     } catch (error) {
       if (
         error instanceof BadRequestException ||
