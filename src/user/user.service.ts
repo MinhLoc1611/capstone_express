@@ -9,10 +9,12 @@ export class UserService {
   constructor(private jwtService: JwtService) {}
   prisma = new PrismaClient();
 
-  getUserByToken(token: string, res: Response) {
+  async getUserById(id: number, res: Response) {
     try {
-      const user = this.jwtService.decode(token.slice(7, token.length));
-      return successCode(res, user, 'Lấy thông tin thành công');
+      const data = await this.prisma.nguoi_dung.findFirst({
+        where: { nguoi_dung_id: id },
+      });
+      return successCode(res, data, 'Lấy thông tin thành công');
     } catch (err) {
       throw new HttpException(err.response, err.status);
     }
