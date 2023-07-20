@@ -34,7 +34,7 @@ export class ImageService {
     const data = await this.prisma.hinh_anh.findMany({
       where: {
         ten_hinh: {
-          startsWith: `%${ten}%`,
+          contains: `%${ten}%`,
         },
       },
     });
