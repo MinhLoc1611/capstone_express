@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   Param,
   Put,
   Res,
@@ -24,9 +25,12 @@ import { FileUploadDto, userUpdateType } from './dto/user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Get('/:userId')
-  getUserById(@Param('userId') id: string, @Res() res: Response) {
-    return this.userService.getUserById(+id, res);
+  @Get()
+  getUserByToken(
+    @Headers('Authorization') token: string,
+    @Res() res: Response,
+  ) {
+    return this.userService.getUserByToken(token, res);
   }
 
   @ApiConsumes('multipart/form-data')

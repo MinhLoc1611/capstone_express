@@ -1,6 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, nguoi_dung } from '@prisma/client';
 import { successCode } from 'src/config/response';
 import { userUpdateType } from './dto/user.dto';
 
@@ -9,10 +9,13 @@ export class UserService {
   constructor(private jwtService: JwtService) {}
   prisma = new PrismaClient();
 
-  async getUserById(id: number, res: Response) {
+  async getUserByToken(token: string, res: Response) {
     try {
+      const user: nguoi_dung | any = this.jwtService.decode(
+        token.slice(7, token.length),
+      );
       const data = await this.prisma.nguoi_dung.findFirst({
-        where: { nguoi_dung_id: id },
+        where: { nguoi_dung_id: user.nguoi_dung_id },
       });
       return successCode(res, data, 'Lấy thông tin thành công');
     } catch (err) {
